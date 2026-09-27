@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useStore } from '../lib/store';
 import { Order, PaymentMethod, ShippingAddress } from '../types';
-import { ShieldCheck, Truck, Banknote, ArrowLeft, ArrowRight, Check, Mail, MessageCircle, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Truck, Banknote, ArrowLeft, ArrowRight, Check, MessageCircle, CheckCircle2 } from 'lucide-react';
 import { PerfumeBottleGraphic } from '../components/ui/PerfumeBottleGraphic';
-import { formatOrderEmail, DEFAULT_ORDER_NOTIFICATION_EMAIL } from '../lib/orderEmailService';
 
 interface CheckoutPageProps {
   navigate: (path: string) => void;
@@ -41,12 +40,15 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate }) => {
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
 
   if (confirmedOrder) {
-    const targetEmail = settings.orderNotificationEmail || DEFAULT_ORDER_NOTIFICATION_EMAIL;
-    const emailPayload = formatOrderEmail(confirmedOrder, targetEmail);
+    const rawPhone = (settings.phone || '212687853048').replace(/[^0-9]/g, '');
+    const whatsappOrderMessage = encodeURIComponent(
+      `Bonjour METANOÏA,\nJe viens de valider ma commande #${confirmedOrder.orderNumber} d'un montant de ${confirmedOrder.total} ${settings.currency}.\nNom: ${confirmedOrder.customer.firstName} ${confirmedOrder.customer.lastName}\nVille: ${confirmedOrder.customer.city}`
+    );
+    const whatsappUrl = `https://wa.me/${rawPhone}?text=${whatsappOrderMessage}`;
 
     return (
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16">
-        <div className="bg-[#121216] border border-[#2B2B38] p-8 sm:p-10 rounded-sm text-center space-y-6">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16">
+        <div className="bg-[#121216] border border-[#2B2B38] p-8 sm:p-10 rounded-sm text-center space-y-6 shadow-2xl">
           <div className="w-16 h-16 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto">
             <CheckCircle2 className="w-8 h-8" />
           </div>
@@ -56,34 +58,37 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate }) => {
               COMMANDE CONFIRMÉE AVEC SUCCÈS
             </span>
             <h1 className="text-2xl sm:text-3xl font-serif text-[#F5F1EB]">
-              Merci pour votre commande, {confirmedOrder.customer.firstName} !
+              Merci pour votre confiance, {confirmedOrder.customer.firstName}
             </h1>
             <p className="text-xs text-[#A7A3A0]">
-              Référence officielle : <strong className="font-mono text-[#D8B08C]">#{confirmedOrder.orderNumber}</strong>
+              Référence de commande : <strong className="font-mono text-[#D8B08C]">#{confirmedOrder.orderNumber}</strong>
             </p>
           </div>
 
-          {/* Email Notification Dispatch Status Banner */}
-          <div className="p-4 bg-[#181822] border border-[#D8B08C]/30 rounded-sm text-left space-y-2">
+          {/* Reassurance Status Card */}
+          <div className="p-4 bg-[#171722] border border-[#2A2A3A] rounded-sm text-left space-y-2">
             <div className="flex items-center gap-2 text-xs font-semibold text-[#D8B08C]">
-              <Mail className="w-4 h-4 text-[#D8B08C]" />
-              <span>Notification transmise à l'atelier : {targetEmail}</span>
+              <Truck className="w-4 h-4 text-[#D8B08C]" />
+              <span>Commande en cours de préparation à l'atelier</span>
             </div>
-            <p className="text-[11px] text-[#A7A3A0] leading-relaxed">
-              L'ensemble des coordonnées de livraison, articles commandés et montants ont été envoyés à l'adresse 
-              <strong className="text-[#F5F1EB] font-mono"> {targetEmail}</strong> pour validation et mise en préparation immédiate.
+            <p className="text-[12px] text-[#A7A3A0] leading-relaxed">
+              Votre commande a été enregistrée avec succès. Notre équipe prépare votre colis avec soin. Notre service logistique vous contactera par téléphone avant l'arrivée du livreur.
             </p>
           </div>
 
-          {/* Order Details Brief */}
-          <div className="bg-[#16161D] border border-[#22222A] p-4 rounded-sm text-left text-xs space-y-3">
+          {/* Coordinated Order Details Recap */}
+          <div className="bg-[#16161D] border border-[#22222A] p-5 rounded-sm text-left text-xs space-y-3">
             <div className="flex justify-between border-b border-[#22222A] pb-2 text-[#A7A3A0]">
               <span>Destinataire :</span>
-              <span className="text-[#F5F1EB] font-medium">{confirmedOrder.customer.firstName} {confirmedOrder.customer.lastName} ({confirmedOrder.customer.phone})</span>
+              <span className="text-[#F5F1EB] font-medium">{confirmedOrder.customer.firstName} {confirmedOrder.customer.lastName}</span>
             </div>
             <div className="flex justify-between border-b border-[#22222A] pb-2 text-[#A7A3A0]">
-              <span>Ville de livraison :</span>
-              <span className="text-[#F5F1EB] font-medium">{confirmedOrder.customer.city} · {confirmedOrder.customer.address}</span>
+              <span>Téléphone de contact :</span>
+              <span className="text-[#F5F1EB] font-medium font-mono">{confirmedOrder.customer.phone}</span>
+            </div>
+            <div className="flex justify-between border-b border-[#22222A] pb-2 text-[#A7A3A0]">
+              <span>Adresse de livraison :</span>
+              <span className="text-[#F5F1EB] font-medium text-right max-w-xs truncate">{confirmedOrder.customer.address}, {confirmedOrder.customer.city}</span>
             </div>
             <div className="flex justify-between border-b border-[#22222A] pb-2 text-[#A7A3A0]">
               <span>Mode de règlement :</span>
@@ -92,38 +97,28 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate }) => {
               </span>
             </div>
             <div className="flex justify-between pt-1 text-sm font-bold text-[#D8B08C]">
-              <span>Total à régler :</span>
-              <span className="font-mono">{confirmedOrder.total} {settings.currency}</span>
+              <span>Total à régler à la livraison :</span>
+              <span className="font-mono text-base">{confirmedOrder.total} {settings.currency}</span>
             </div>
           </div>
 
           {/* Interactive Fast Actions */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <div className="pt-2">
             <a
-              href={emailPayload.gmailComposeUrl}
+              href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 py-3 px-4 bg-[#1C1C26] hover:bg-[#252533] border border-[#333344] text-[#F5F1EB] text-xs font-semibold rounded-sm transition-colors"
-            >
-              <Mail className="w-4 h-4 text-red-400" />
-              <span>Ouvrir dans Gmail ({targetEmail})</span>
-            </a>
-
-            <a
-              href={emailPayload.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 py-3 px-4 bg-emerald-950/40 hover:bg-emerald-950/70 border border-emerald-800/60 text-emerald-300 text-xs font-semibold rounded-sm transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-emerald-950/50 hover:bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 text-xs font-semibold rounded-sm transition-colors"
             >
               <MessageCircle className="w-4 h-4 text-emerald-400" />
-              <span>Confirmer sur WhatsApp</span>
+              <span>Assistance &amp; Suivi WhatsApp ({settings.phone || '+212 6 87 85 30 48'})</span>
             </a>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-[#22222A]">
+          <div className="flex flex-col sm:flex-row gap-3 pt-3 border-t border-[#22222A]">
             <button
               onClick={() => navigate(`/account/orders?success=${confirmedOrder.orderNumber}`)}
-              className="flex-1 py-2.5 bg-gradient-to-r from-[#D8B08C] to-[#C9A46C] text-[#0B0B0D] font-bold text-xs uppercase tracking-widest rounded-sm"
+              className="flex-1 py-2.5 bg-gradient-to-r from-[#D8B08C] to-[#C9A46C] text-[#0B0B0D] font-bold text-xs uppercase tracking-widest rounded-sm hover:brightness-110 transition-all"
             >
               Voir le suivi de ma commande
             </button>

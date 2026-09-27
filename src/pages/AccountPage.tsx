@@ -26,7 +26,6 @@ import {
   History as HistoryIcon,
   Laptop,
 } from 'lucide-react';
-import { formatOrderEmail, DEFAULT_ORDER_NOTIFICATION_EMAIL } from '../lib/orderEmailService';
 
 interface AccountPageProps {
   initialTab?: 'orders' | 'wishlist' | 'profile' | 'security';
@@ -165,8 +164,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
                   Commande #{successOrderNumber} confirmée avec succès !
                 </h3>
                 <p className="text-[11px] text-emerald-400/80">
-                  Les détails de votre commande ont été transmis au responsable de la boutique :{' '}
-                  <strong className="text-[#F5F1EB] font-mono">{settings.orderNotificationEmail || DEFAULT_ORDER_NOTIFICATION_EMAIL}</strong>
+                  Votre commande est enregistrée et prise en charge par notre atelier pour préparation et livraison.
                 </p>
               </div>
             </div>
@@ -181,29 +179,20 @@ export const AccountPage: React.FC<AccountPageProps> = ({
           {activeOrder && activeOrder.orderNumber === successOrderNumber && (
             <div className="flex flex-wrap gap-2 pt-2 border-t border-emerald-800/40">
               {(() => {
-                const targetEmail = settings.orderNotificationEmail || DEFAULT_ORDER_NOTIFICATION_EMAIL;
-                const emailPayload = formatOrderEmail(activeOrder, targetEmail);
+                const rawPhone = (settings.phone || '212687853048').replace(/[^0-9]/g, '');
+                const msg = encodeURIComponent(
+                  `Bonjour METANOÏA, je souhaite suivre ma commande #${activeOrder.orderNumber} d'un montant de ${activeOrder.total} ${settings.currency}.`
+                );
                 return (
-                  <>
-                    <a
-                      href={emailPayload.gmailComposeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#1A1A24] border border-[#333344] text-[#F5F1EB] text-[11px] rounded-sm hover:border-[#D8B08C] transition-colors"
-                    >
-                      <Mail className="w-3 h-3 text-red-400" />
-                      <span>Ouvrir dans Gmail ({targetEmail})</span>
-                    </a>
-                    <a
-                      href={emailPayload.whatsappUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-900/40 border border-emerald-700/50 text-emerald-300 text-[11px] rounded-sm hover:bg-emerald-900/60 transition-colors"
-                    >
-                      <MessageCircle className="w-3 h-3 text-emerald-400" />
-                      <span>Confirmer sur WhatsApp</span>
-                    </a>
-                  </>
+                  <a
+                    href={`https://wa.me/${rawPhone}?text=${msg}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-900/40 border border-emerald-700/50 text-emerald-300 text-[11px] rounded-sm hover:bg-emerald-900/60 transition-colors"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Contacter le support WhatsApp</span>
+                  </a>
                 );
               })()}
             </div>
