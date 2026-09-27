@@ -341,19 +341,11 @@ export const ShopPage: React.FC<ShopPageProps> = ({
                 <Sparkles className="w-5 h-5" />
               </div>
               <h3 className="font-serif text-2xl text-[#F5F1EB]">
-                Le catalogue est actuellement vierge
+                Collection en cours de préparation
               </h3>
               <p className="text-sm text-[#A7A3A0] max-w-md mx-auto font-light leading-relaxed">
-                Aucun parfum n'a encore été mis en ligne. Rendez-vous dans votre espace administrateur pour créer et ajouter vos premiers flacons et extraits.
+                Nos artisans parfumeurs assemblent actuellement les nouvelles créations olfactives. Le catalogue sera disponible très prochainement.
               </p>
-              <div className="pt-2">
-                <button
-                  onClick={() => navigate('/admin?tab=products')}
-                  className="px-6 py-3 bg-gradient-to-r from-[#D8B08C] to-[#C9A46C] text-[#0B0B0D] font-semibold text-xs uppercase tracking-widest rounded-sm hover:brightness-110 transition-all inline-flex items-center gap-2"
-                >
-                  <span>Ajouter un Parfum en Espace Admin</span>
-                </button>
-              </div>
             </div>
           ) : paginatedProducts.length === 0 ? (
             <div className="py-20 text-center bg-[#111115] border border-[#22222A] rounded-sm p-8">

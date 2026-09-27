@@ -165,20 +165,11 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate }) => {
               <Sparkles className="w-5 h-5" />
             </div>
             <h3 className="font-serif text-2xl text-[#F5F1EB]">
-              Boutique Prête · Catalogue Vierge
+              Nouvelles Créations en Préparation
             </h3>
             <p className="text-sm text-[#A7A3A0] max-w-lg mx-auto font-light leading-relaxed">
-              La boutique est prête pour votre déploiement. Vous pouvez dès à présent ajouter vos premiers parfums, photos, notes olfactives et stocks depuis l'espace administrateur.
+              Les extraits de parfum signature sont actuellement en cours de macération dans nos ateliers de Marrakech. Notre collection exclusive sera dévoilée très prochainement.
             </p>
-            <div className="pt-2">
-              <button
-                onClick={() => navigate('/admin?tab=products')}
-                className="px-6 py-3 bg-gradient-to-r from-[#D8B08C] to-[#C9A46C] text-[#0B0B0D] font-semibold text-xs uppercase tracking-widest rounded-sm hover:brightness-110 transition-all inline-flex items-center gap-2 shadow-lg shadow-[#D8B08C]/15"
-              >
-                <span>Accéder à l'Espace Admin pour Ajouter vos Parfums</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

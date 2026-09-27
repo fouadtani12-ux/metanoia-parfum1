@@ -144,7 +144,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ navigate }) => {
   // Admin Login Portal State (if not authenticated as admin)
   const [adminAuthEmail, setAdminAuthEmail] = useState('admin@metanoia.com');
   const [adminAuthPassword, setAdminAuthPassword] = useState('Metanoia2026!');
-  const [adminAuthPin, setAdminAuthPin] = useState('2026');
   const [adminAuthError, setAdminAuthError] = useState<string | null>(null);
 
   // Screen Lock State
@@ -435,39 +434,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ navigate }) => {
       e.preventDefault();
       setAdminAuthError(null);
 
-      if (adminAuthPin !== '2026') {
-        setAdminAuthError('Code PIN de sécurité Atelier incorrect (PIN requis : 2026)');
-        return;
-      }
-
       const res = login(adminAuthEmail, adminAuthPassword, 'ADMIN');
       if (!res.success) {
         setAdminAuthError(res.message || 'Identifiants administrateur non reconnus');
       }
     };
 
-    const fillDemoAdminCreds = () => {
-      setAdminAuthEmail('admin@metanoia.com');
-      setAdminAuthPassword('Metanoia2026!');
-      setAdminAuthPin('2026');
-      setAdminAuthError(null);
-    };
-
     return (
       <div className="min-h-screen bg-[#07070A] flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-[#111116] border border-[#2B2B38] p-8 rounded-sm shadow-2xl space-y-6">
-          <div className="text-center space-y-2">
+        <div className="w-full max-w-sm bg-[#111116] border border-[#2B2B38] p-8 rounded-sm shadow-2xl space-y-6">
+          <div className="text-center space-y-3">
             <BrandLogo size="md" withTagline />
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 mt-2 rounded-full bg-[#181824] border border-[#3E3E55] text-[10px] font-mono text-[#D8B08C]">
-              <Lock className="w-3 h-3 text-amber-400" />
-              <span>Zone Haute Sécurité · Direction &amp; Atelier</span>
-            </div>
-            <h2 className="text-lg font-serif text-[#F5F1EB] mt-2">
-              Portail d’Accès Restreint
+            <h2 className="text-xl font-serif text-[#F5F1EB] mt-3">
+              Espace Administrateur
             </h2>
-            <p className="text-xs text-[#A7A3A0]">
-              Veuillez décliner votre identité et votre code d'habilitation pour accéder au tableau de bord exécutif.
-            </p>
           </div>
 
           {adminAuthError && (
@@ -494,7 +474,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ navigate }) => {
 
             <div>
               <label className="text-[11px] uppercase tracking-wider text-[#A7A3A0] block mb-1">
-                Mot de Passe Sécurisé
+                Mot de Passe
               </label>
               <input
                 type="password"
@@ -506,46 +486,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ navigate }) => {
               />
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="text-[11px] uppercase tracking-wider text-[#A7A3A0]">
-                  Code PIN Clé Atelier (4 chiffres)
-                </label>
-                <span className="text-[10px] font-mono text-[#D8B08C]">PIN : 2026</span>
-              </div>
-              <input
-                type="password"
-                maxLength={4}
-                required
-                value={adminAuthPin}
-                onChange={(e) => setAdminAuthPin(e.target.value)}
-                placeholder="••••"
-                className="w-full bg-[#171720] border border-[#2B2B38] px-3.5 py-2.5 text-xs text-[#F5F1EB] rounded-sm focus:outline-none focus:border-[#D8B08C] font-mono text-center tracking-[0.5em] text-base"
-              />
-            </div>
-
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-[#D8B08C] via-[#C9A46C] to-[#C98F78] hover:brightness-110 text-[#0B0B0D] font-bold text-xs uppercase tracking-[0.2em] rounded-sm transition-all shadow-lg shadow-[#D8B08C]/10 flex items-center justify-center gap-2"
+              className="w-full py-3 bg-gradient-to-r from-[#D8B08C] via-[#C9A46C] to-[#C98F78] hover:brightness-110 text-[#0B0B0D] font-bold text-xs uppercase tracking-[0.2em] rounded-sm transition-all shadow-lg shadow-[#D8B08C]/10 flex items-center justify-center gap-2 cursor-pointer mt-2"
             >
               <ShieldCheck className="w-4 h-4" />
-              <span>Valider les Accréditations</span>
+              <span>Se Connecter</span>
             </button>
           </form>
-
-          {/* Quick Demo Credentials Button */}
-          <div className="p-3 bg-[#171722] border border-[#2E2E3E] rounded-sm space-y-2 text-center">
-            <span className="text-[10px] font-mono text-[#A7A3A0] block">
-              Besoin de tester l'accès administrateur ?
-            </span>
-            <button
-              type="button"
-              onClick={fillDemoAdminCreds}
-              className="w-full py-1.5 px-3 bg-[#222232] hover:bg-[#2A2A3E] border border-[#3A3A52] text-xs text-[#D8B08C] rounded-sm transition-colors font-mono"
-            >
-              ⚡ Remplir les identifiants Atelier (admin@metanoia.com / PIN 2026)
-            </button>
-          </div>
 
           <div className="pt-2 text-center">
             <button
@@ -553,7 +501,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ navigate }) => {
               onClick={() => navigate('/')}
               className="text-xs text-[#A7A3A0] hover:text-[#F5F1EB] transition-colors"
             >
-              ← Retourner à la boutique publique
+              ← Retourner à la boutique
             </button>
           </div>
         </div>
