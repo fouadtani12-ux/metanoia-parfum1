@@ -164,6 +164,12 @@ const STORAGE_KEYS = {
   LANG: 'metanoia_lang_v3',
 };
 
+export const AUTHORIZED_ADMIN_EMAILS = [
+  'fouadtani12@gmail.com',
+  'admin@metanoia.com',
+  'azzakhmamalaa@gmail.com',
+];
+
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Localization
   const [language, setLanguageState] = useState<Language>(() => {
@@ -518,9 +524,27 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     role?: 'CUSTOMER' | 'ADMIN'
   ): { success: boolean; message?: string; isLocked?: boolean } => {
     const cleanEmail = email.trim().toLowerCase();
+    const isAuthorizedAdminEmail = AUTHORIZED_ADMIN_EMAILS.includes(cleanEmail);
+
+    if (role === 'ADMIN' && !isAuthorizedAdminEmail) {
+      showToast('Accès refusé. Seul l’administrateur autorisé peut se connecter avec son email.', 'error');
+      return {
+        success: false,
+        message: 'Accès refusé : Seul l’administrateur autorisé peut se connecter avec son email.',
+      };
+    }
+
     const found = users.find((u) => u.email.toLowerCase() === cleanEmail);
 
     if (found) {
+      // If user had admin role but email is not in whitelist, reject admin access
+      if (found.role === 'ADMIN' && !isAuthorizedAdminEmail) {
+        showToast('Accès refusé. Cette adresse email n’est pas autorisée pour l’espace administrateur.', 'error');
+        return {
+          success: false,
+          message: 'Accès refusé. Email non autorisé.',
+        };
+      }
       // Check lockout
       if (found.lockUntil && new Date(found.lockUntil) > new Date()) {
         const remainingMinutes = Math.ceil(
@@ -629,11 +653,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
 
     // If admin requested but not found in existing users
-    const isAdminCandidate =
-      role === 'ADMIN' ||
-      cleanEmail === 'admin@metanoia.com' ||
-      cleanEmail === 'fouadtani12@gmail.com' ||
-      cleanEmail === 'azzakhmamalaa@gmail.com';
+    const isAdminCandidate = isAuthorizedAdminEmail;
 
     if (isAdminCandidate) {
       if (password && password !== 'Metanoia2026!' && password !== 'admin' && password !== 'admin123') {

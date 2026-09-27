@@ -38,6 +38,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug, navi
 
   const [selectedVolume, setSelectedVolume] = useState<Volume>(product.volume);
   const [quantity, setQuantity] = useState(1);
+  const [imgLoadFailed, setImgLoadFailed] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
   const [reviewAuthor, setReviewAuthor] = useState(
@@ -185,15 +186,30 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ slug, navi
               <Heart className="w-4 h-4 fill-current" />
             </button>
 
-            {/* Luxury Flacon Graphic */}
-            <PerfumeBottleGraphic
-              name={product.name}
-              category={product.gender}
-              volume={selectedVolume}
-              accentColor={product.accentColor}
-              gradientStyle={product.gradientStyle}
-              size="hero"
-            />
+            {/* Luxury Flacon Visual or Uploaded Photo */}
+            {product.images && product.images[0] && !product.images[0].startsWith('/perfume-') && !imgLoadFailed ? (
+              <div className="relative w-full h-[380px] sm:h-[440px] flex items-center justify-center p-4">
+                <div
+                  className="absolute inset-0 opacity-20 blur-3xl pointer-events-none rounded-full"
+                  style={{ background: product.accentColor || '#D8B08C' }}
+                />
+                <img
+                  src={product.images[0]}
+                  alt={product.name}
+                  onError={() => setImgLoadFailed(true)}
+                  className="relative z-10 max-h-[360px] sm:max-h-[400px] max-w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+            ) : (
+              <PerfumeBottleGraphic
+                name={product.name}
+                category={product.gender}
+                volume={selectedVolume}
+                accentColor={product.accentColor}
+                gradientStyle={product.gradientStyle}
+                size="hero"
+              />
+            )}
           </div>
         </div>
 

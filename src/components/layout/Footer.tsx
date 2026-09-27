@@ -8,7 +8,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ navigate }) => {
-  const { settings, showToast, t, language } = useStore();
+  const { settings, showToast, t, language, currentUser } = useStore();
   const [newsletterEmail, setNewsletterEmail] = React.useState('');
 
   const handleNewsletter = (e: React.FormEvent) => {
@@ -236,15 +236,19 @@ export const Footer: React.FC<FooterProps> = ({ navigate }) => {
             >
               {t('footer.privacy')}
             </button>
-            <span>·</span>
-            <button
-              onClick={() => navigate('/admin?tab=stocks')}
-              className="text-[#D8B08C] hover:text-[#FAF5EE] transition-colors font-mono flex items-center gap-1.5"
-              title="Accéder au panneau administrateur et au contrôle des stocks"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-[#D8B08C]" />
-              <span>Espace Admin &amp; Contrôle des Stocks</span>
-            </button>
+            {currentUser?.role === 'ADMIN' && (
+              <>
+                <span>·</span>
+                <button
+                  onClick={() => navigate('/admin?tab=stocks')}
+                  className="text-[#D8B08C] hover:text-[#FAF5EE] transition-colors font-mono flex items-center gap-1.5"
+                  title="Accéder au panneau administrateur et au contrôle des stocks"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#D8B08C]" />
+                  <span>Espace Admin</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

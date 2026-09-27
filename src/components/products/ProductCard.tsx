@@ -12,9 +12,16 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onNavigate }) => {
   const { addToCart, isInWishlist, toggleWishlist, settings, t } = useStore();
   const inWishlist = isInWishlist(product.id);
+  const [imgLoadFailed, setImgLoadFailed] = React.useState(false);
 
   const isLowStock = product.stock > 0 && product.stock <= 4;
   const isOutOfStock = product.stock === 0;
+
+  const hasCustomPhoto =
+    product.images &&
+    product.images[0] &&
+    !product.images[0].startsWith('/perfume-') &&
+    !imgLoadFailed;
 
   return (
     <div className="group relative bg-[#121215] border border-[#22222A] hover:border-[#D8B08C]/40 rounded-sm overflow-hidden transition-all duration-300 flex flex-col justify-between">
@@ -58,16 +65,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onNavigate })
       {/* Main Flacon Visual */}
       <div
         onClick={() => onNavigate(`/product/${product.slug}`)}
-        className="cursor-pointer relative pt-8 pb-4 flex items-center justify-center bg-gradient-to-b from-[#18181D]/60 to-[#0F0F12] group-hover:brightness-105 transition-all overflow-hidden"
+        className="cursor-pointer relative pt-8 pb-4 flex items-center justify-center bg-gradient-to-b from-[#18181D]/60 to-[#0F0F12] group-hover:brightness-105 transition-all overflow-hidden min-h-[220px]"
       >
-        <PerfumeBottleGraphic
-          name={product.name}
-          category={product.gender}
-          volume={product.volume}
-          accentColor={product.accentColor}
-          gradientStyle={product.gradientStyle}
-          size="md"
-        />
+        {hasCustomPhoto ? (
+          <div className="h-48 w-full flex items-center justify-center p-3 relative">
+            <img
+              src={product.images[0]}
+              alt={product.name}
+              onError={() => setImgLoadFailed(true)}
+              className="max-h-44 max-w-full object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.7)] group-hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+        ) : (
+          <PerfumeBottleGraphic
+            name={product.name}
+            category={product.gender}
+            volume={product.volume}
+            accentColor={product.accentColor}
+            gradientStyle={product.gradientStyle}
+            size="md"
+          />
+        )}
 
         {/* Quick view overlay bar */}
         <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-[#0B0B0D] via-[#0B0B0D]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">

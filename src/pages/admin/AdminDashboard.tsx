@@ -44,6 +44,9 @@ import {
   Laptop,
   Sparkles,
   History as HistoryIcon,
+  Upload,
+  Image as ImageIcon,
+  X,
 } from 'lucide-react';
 import { Product, OrderStatus, Volume, Gender, FragranceFamily } from '../../types';
 import { formatOrderEmail, DEFAULT_ORDER_NOTIFICATION_EMAIL } from '../../lib/orderEmailService';
@@ -142,9 +145,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ navigate }) => {
   };
 
   // Admin Login Portal State (if not authenticated as admin)
-  const [adminAuthEmail, setAdminAuthEmail] = useState('admin@metanoia.com');
-  const [adminAuthPassword, setAdminAuthPassword] = useState('Metanoia2026!');
+  const [adminAuthEmail, setAdminAuthEmail] = useState('');
+  const [adminAuthPassword, setAdminAuthPassword] = useState('');
   const [adminAuthError, setAdminAuthError] = useState<string | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   // Screen Lock State
   const [screenLockPin, setScreenLockPin] = useState('');
@@ -445,9 +449,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ navigate }) => {
         <div className="w-full max-w-sm bg-[#111116] border border-[#2B2B38] p-8 rounded-sm shadow-2xl space-y-6">
           <div className="text-center space-y-3">
             <BrandLogo size="md" withTagline />
-            <h2 className="text-xl font-serif text-[#F5F1EB] mt-3">
+            <div className="pt-2">
+              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#D8B08C] border border-[#D8B08C]/30 bg-[#171720] px-2.5 py-1 rounded-sm">
+                ACCÈS STRICTEMENT RÉSERVÉ
+              </span>
+            </div>
+            <h2 className="text-xl font-serif text-[#F5F1EB] mt-2">
               Espace Administrateur
             </h2>
+            <p className="text-[11px] text-[#A7A3A0] leading-relaxed">
+              Cet espace est strictement réservé à la direction. Veuillez vous authentifier avec votre email administrateur autorisé.
+            </p>
           </div>
 
           {adminAuthError && (
@@ -460,14 +472,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ navigate }) => {
           <form onSubmit={handleAdminPortalLogin} className="space-y-4 text-xs">
             <div>
               <label className="text-[11px] uppercase tracking-wider text-[#A7A3A0] block mb-1">
-                Identifiant Administrateur
+                Email Administrateur Autorisé
               </label>
               <input
                 type="email"
                 required
                 value={adminAuthEmail}
                 onChange={(e) => setAdminAuthEmail(e.target.value)}
-                placeholder="admin@metanoia.com"
+                placeholder="fouadtani12@gmail.com"
                 className="w-full bg-[#171720] border border-[#2B2B38] px-3.5 py-2.5 text-xs text-[#F5F1EB] rounded-sm focus:outline-none focus:border-[#D8B08C] font-mono"
               />
             </div>
@@ -491,7 +503,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ navigate }) => {
               className="w-full py-3 bg-gradient-to-r from-[#D8B08C] via-[#C9A46C] to-[#C98F78] hover:brightness-110 text-[#0B0B0D] font-bold text-xs uppercase tracking-[0.2em] rounded-sm transition-all shadow-lg shadow-[#D8B08C]/10 flex items-center justify-center gap-2 cursor-pointer mt-2"
             >
               <ShieldCheck className="w-4 h-4" />
-              <span>Se Connecter</span>
+              <span>Se Connecter à l'Administration</span>
             </button>
           </form>
 

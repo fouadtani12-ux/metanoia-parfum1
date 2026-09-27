@@ -227,13 +227,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, navigate, openSearc
             >
               {currentUser ? `${t('nav.account')} (${currentUser.firstName})` : t('nav.login')}
             </button>
-            <button
-              onClick={() => handleNavClick('/admin?tab=stocks')}
-              className="text-left text-xs uppercase tracking-[0.2em] text-[#D8B08C]/90 hover:text-[#D8B08C] py-2.5 flex items-center gap-2 pt-3 border-t border-[#1E1E24]"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-[#D8B08C]" />
-              <span>Espace Admin &amp; Gestion des Stocks</span>
-            </button>
+            {currentUser?.role === 'ADMIN' && (
+              <button
+                onClick={() => handleNavClick('/admin?tab=stocks')}
+                className="text-left text-xs uppercase tracking-[0.2em] text-[#D8B08C]/90 hover:text-[#D8B08C] py-2.5 flex items-center gap-2 pt-3 border-t border-[#1E1E24]"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-[#D8B08C]" />
+                <span>Espace Admin</span>
+              </button>
+            )}
           </nav>
         </div>
       )}

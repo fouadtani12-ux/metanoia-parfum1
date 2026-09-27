@@ -168,13 +168,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                     }}
                     className="w-16 h-20 bg-[#0B0B0D] rounded-sm flex items-center justify-center shrink-0 cursor-pointer overflow-hidden p-1 border border-[#22222A]"
                   >
-                    <PerfumeBottleGraphic
-                      name={item.product.name}
-                      category={item.product.gender}
-                      volume={item.volume}
-                      accentColor={item.product.accentColor}
-                      size="sm"
-                    />
+                    {item.product.images && item.product.images[0] && !item.product.images[0].startsWith('/perfume-') ? (
+                      <img
+                        src={item.product.images[0]}
+                        alt={item.product.name}
+                        className="h-full w-auto object-contain"
+                      />
+                    ) : (
+                      <PerfumeBottleGraphic
+                        name={item.product.name}
+                        category={item.product.gender}
+                        volume={item.volume}
+                        accentColor={item.product.accentColor}
+                        size="sm"
+                      />
+                    )}
                   </div>
 
                   {/* Info */}

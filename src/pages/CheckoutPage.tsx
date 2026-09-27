@@ -454,14 +454,22 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ navigate }) => {
                   key={`${item.productId}-${item.volume}`}
                   className="py-3 flex items-center gap-3"
                 >
-                  <div className="w-10 h-12 bg-[#0A0A0D] border border-[#252530] rounded-sm flex items-center justify-center p-1 shrink-0">
-                    <PerfumeBottleGraphic
-                      name={item.product.name}
-                      category={item.product.gender}
-                      volume={item.volume}
-                      accentColor={item.product.accentColor}
-                      size="sm"
-                    />
+                  <div className="w-10 h-12 bg-[#0A0A0D] border border-[#252530] rounded-sm flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                    {item.product.images && item.product.images[0] && !item.product.images[0].startsWith('/perfume-') ? (
+                      <img
+                        src={item.product.images[0]}
+                        alt={item.product.name}
+                        className="h-full w-auto object-contain"
+                      />
+                    ) : (
+                      <PerfumeBottleGraphic
+                        name={item.product.name}
+                        category={item.product.gender}
+                        volume={item.volume}
+                        accentColor={item.product.accentColor}
+                        size="sm"
+                      />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="text-xs font-serif font-medium text-[#F5F1EB] truncate">
